@@ -1,18 +1,42 @@
 import { pool } from "../dbconfig/db-connector";
-import { Client } from "pg";
+import { getAllTest, postTest, getTestById } from "../queries/testtsQuery";
+// import { Client } from "pg";
 
-export const AddTest = async (test: any) => {
+export const AddTest = async (request: any, response: any) => {
+	const client = await pool.connect();
+	const { username, email, pin } = request.body;
+	try {
+		response
+			.status(200)
+			.send(await client.query(postTest, [username, email, pin]));
+	} catch (error) {
+		console.log(error);
+	} finally {
+		client.release();
+	}
+	response.status(201).send("Test added");
+};
+
+export const GetAllTest = async (request: any, response: any) => {
 	const client = await pool.connect();
 	try {
-		await client.query("BEGIN");
-		await client.query("INSERT INTO test(name, age) VALUES($1, $2)", [
-			test.name,
-			test.age,
-		]);
-		await client.query("COMMIT");
-	} catch (err) {
-		await client.query("ROLLBACK");
-		throw err;
+		const result = await client.query(getAllTest);
+		response.status(200).send(result.rows);
+	} catch (error) {
+		console.log(error);
+	} finally {
+		client.release();
+	}
+};
+
+export const GetTestById = async (request: any, response: any) => {
+	const client = await pool.connect();
+	const { id } = request.params;
+	try {
+		const result = await client.query(getTestById, [id]);
+		response.status(200).send(result.rows);
+	} catch (error) {
+		console.log(error);
 	} finally {
 		client.release();
 	}

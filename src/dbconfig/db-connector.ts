@@ -2,6 +2,8 @@ import { Pool, Client } from "pg";
 // pools will use environment variables
 // for connection information
 // require("dotenv").config();
+const types = require("pg").types;
+types.setTypeParser(1700, "text", parseFloat);
 
 export const pool = new Pool({
 	user: "postgres",

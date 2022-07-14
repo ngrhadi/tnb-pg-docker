@@ -1,10 +1,10 @@
-import express, { Router } from "express";
+import express from "express";
 import cors from "cors";
 import { pool } from "./dbconfig/db-connector";
 import bodyParser from "body-parser";
+import testRoutes from "./routes/routesTest";
 
 const app: express.Application = express();
-const router: Router = express.Router();
 const port: number = 5050;
 const host: string = "localhost";
 const corsOptions = {
@@ -17,6 +17,16 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
+// app.use("/", function home(requset, response) {
+// 	response.send("Hello World");
+// });
+// app.route("/").get((requset, response) => {
+// 	response.send("Hello World");
+// });
+app.use("/test", testRoutes);
+// app.use("/test", TestController.GetAllTest);
+// app.use("/test/:id", TestController.GetTestById);
 
 const server = app
 	.listen(port, host, () => {
